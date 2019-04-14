@@ -9,7 +9,7 @@ const NavBar = (props: Props) => {
     <header role="navigation" className="header header__desktop">
       <section className="header-wrap">
         <div className="logo-block">
-          <Link to="/welcome">
+          <Link to="/">
             <img src="/img/inrupt.svg" alt="inrupt" />
           </Link>
         </div>

@@ -27,7 +27,7 @@ const NotLoggedInLayout = props => {
       )}
     />
   ) : (
-    <Redirect to="/welcome" />
+    <Redirect to="/" />
   );
 };
 

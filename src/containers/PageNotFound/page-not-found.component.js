@@ -9,7 +9,7 @@ import {
 
 /**
  * A React component page that is displayed when there's no valid route. Users can click the button
- * to get back to the home/welcome page.
+ * to get back to the home page.
  */
 const PageNotFound = ({ t }) => {
   return (
