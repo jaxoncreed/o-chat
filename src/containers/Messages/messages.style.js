@@ -2,92 +2,147 @@ import styled from "styled-components";
 
 import { media } from "../../utils";
 
-export const ProfileWrapper = styled.section`
+const darkPurple = '#190335';
+const lightPurple = '#F3F2F4';
+const white = '#FFF';
+
+/**
+ * Messages
+ */
+export const MessagesWrapper = styled.section`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background-image: url("/img/concentric-hex-pattern_2x.png");
-  background-repeat: repeat;
-  min-height: 79vh;
-  padding: 60px 0;
-`;
-export const ProfileContainer = styled.div`
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-  background-color: white;
-  max-width: 900px;
-  margin: 0 20px;
-  height: 100%;
-  width: 100%;
-  overflow-y: auto;
-  ${media.tablet`
-    height: 90%;
-  `}
+  justify-content: stretch;
+  height: 100vh;
+  overflow: hidden;
 `;
 
-export const Header = styled.div`
+export const FolderSelection = styled.nav`
+  width: 50px;
+  background-color: ${darkPurple};
+  padding-top: 5px;
+  padding-left: 17px;
+  box-sizing: border-box;
+  overflow: auto;
+  direction: rtl;
+`
+
+export const FolderTab = styled.div`
+  background-color: ${props => props.selected ? lightPurple : 'transparent'};
+  color: ${props => props.selected ? darkPurple : lightPurple }
+  flex-shrink: 0;
+  padding: 10px;
+  border-bottom: ${lightPurple} solid 1px
+  padding: 5px;
+  padding-right: 10px;
+  box-sizing: border-box;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  direction: ltr;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+`
+
+export const FolderSelectionLabel = styled.span`
+  font-size: 12px;
+  text-overflow: ellipsis;
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+`
+
+
+/**
+ * Message Folder
+ */
+export const ChatSelector = styled.nav`
+  background-color: ${lightPurple};
+  width: 300px;
+  flex-shrink: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+`
+
+export const ChatPane = styled.div`
+  flex-grow: 6;
+  flex-shrink: 0;
+  min-width: 400px;
+`
+
+export const ChatHeader = styled.div`
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  box-sizing: border-box;
+`
+
+export const Logo = styled.img`
+  height: 26px;
+`
+
+export const ChatList = styled.div`
+  overflow: auto
+`
+
+export const SearchbarContainer = styled.div`
+  margin-left: 12px;
+  margin-right: 12px;
+  height: 30px;
   position: relative;
+  background-color: ${white};
+  border-radius: 15px;
+  display: flex;
   align-items: center;
+  padding-left: 7px;
+`
+
+export const SearchTextbox = styled.input`
+  background-color: transparent !important;
+  border-radius: 15px !important;
+  border: none !important;
+  width: 100% !important;
+  height: 100%;
+  position: absolute !important;
+  left: 0;
+  top: 0;
+  padding-left: 20px !important;
+  margin-bottom: 10px;
+`
+
+export const ChatOptionContainer = styled.div`
+  background-color: ${props => props.selected ? white : 'transparent'}
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  margin-left: 12px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  
+`
+
+export const ChatOptionProfileImage = styled.img`
+  height: 50px;
+  border-radius: 50%;
+`
+
+export const ChatOptionTextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  background-image: url("/img/pattern-geo.png"),
-    linear-gradient(135deg, #7c4dff 0%, #18a9e6 50%, #01c9ea 100%);
-  background-repeat: repeat, no-repeat;
-  padding: 30px 20px;
+  margin-left: 12px;
+  overflow: hidden;
+`
 
-  .edit-button {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid white;
-    color: white;
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    font-size: 1rem;
-  }
-`;
+export const ChatOptionName = styled.span`
 
-export const Form = styled.form`
-  padding: 20px 40px;
-  align-items: center;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 20px 40px;
-  ${media.tablet`
-    grid-template-columns: 1fr 1fr;
-  `}
-`;
+`
 
-export const Button = styled.button`
-  max-width: 128px !important;
-  display: inline-block !important;
-
-  &:first-child {
-    margin-right: 10px;
-  }
-`;
-
-export const FullGridSize = styled.div`
-  grid-column: span 1;
-  text-align: right;
-  ${media.tablet`
-    grid-column: span 2;
-  `}
-`;
-
-export const WebId = styled.div`
-  padding: 20px 40px;
-
-  &:before {
-    background-color: #d8d8d8;
-    display: block;
-    content: "";
-    height: 1px;
-    width: 100%;
-    margin-bottom: 25px;
-  }
-
-  a {
-    display: inline-block;
-    word-break: break-all;
-    margin-left: 10px;
-  }
-`;
+export const ChatOptionMessage = styled.span`
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap; 
+  overflow: hidden;
+`
