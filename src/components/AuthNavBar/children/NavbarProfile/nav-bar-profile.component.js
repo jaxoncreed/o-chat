@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import { Dropdown } from "@util-components";
+import data from "@solid/query-ldflex";
 
 import auth from "solid-auth-client";
+import { UpdateContext, withWebId } from "@inrupt/solid-react-components";
 
 export const ImageContainer = styled.div`
   width: 42px;
@@ -25,10 +27,57 @@ export const LoadingImage = styled(ImageContainer)`
   display: block;
 `;
 
+let beforeContext = {};
+
 class NavBarProfile extends Component {
-  state = {
-    imageLoaded: false
+
+  constructor(props) {
+    super(props);
+    this.state = { image: null, imageLoaded: false };
+  }
+
+  getProfileData = async () => {
+    try {
+      // fetching user card from pod. This makes a request and returns the data
+      const user = data.user;
+      /*
+       * In the background LDFlex is using JSON-LD. Because of this, we need to
+       * make an async call. This will return a JSON-LD expanded object and expose the requested value(name).
+       * for more information please go to: https://github.com/digitalbazaar/jsonld.js
+       */
+      const userName = await user.name;
+      let userImage = await user.image;
+      userImage = userImage ? userImage : await user.vcard_hasPhoto;
+      const name = userName ? userName.value : "";
+      const image = userImage ? userImage.value : "/img/icon/empty-profile.svg";
+      this.setState({
+        name,
+        image
+      });
+    } catch (error) {
+      this.props.toastManager.add (['Error', error.message], {
+        appearance: 'error',
+      });
+    }
   };
+
+  componentDidMount() {
+    if (this.props.webId) {
+      this.getProfileData();
+    }
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (this.props.webId && this.props.webId !== prevProps.webId) {
+      this.getProfileData();
+    }
+
+    if (this.context && this.context.timestamp !== beforeContext.timestamp) {
+      this.getProfileData();
+
+      beforeContext = this.context;
+    }
+  }
 
   profileRedirect = () => this.props.history.push("/profile");
 
@@ -45,26 +94,23 @@ class NavBarProfile extends Component {
     }
   };
   render() {
-    const { t, img } = this.props;
-    const { imageLoaded } = this.state;
+    const { imageLoaded, image } = this.state;
+
+    console.log(image)
 
     const profileOpts = [
       {
-        label:  t("navBar.profile"),
-        onClick: this.profileRedirect
-      },
-      {
-        label: t("navBar.logOut"),
+        label: 'Log Out',
         onClick: this.logOut
       }
     ];
 
-    return img ? (
+    return image ? (
       <Dropdown actions={profileOpts} className="nav-bar--profile" hover={true}>
         <ImageContainer show={imageLoaded}>
           <Img
             show={imageLoaded}
-            src={img}
+            src={image}
             alt="profile"
             onLoad={this.onImageLoaded}
           />
@@ -76,5 +122,6 @@ class NavBarProfile extends Component {
     );
   }
 }
+NavBarProfile.contextType = UpdateContext;
 
-export default NavBarProfile;
+export default withWebId(NavBarProfile);

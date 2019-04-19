@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import Chat from './chat'
 import {
   ChatSelector,
   ChatPane,
@@ -13,7 +14,8 @@ import {
   ChatOptionProfileImage,
   ChatOptionTextContainer,
   ChatOptionName,
-  ChatOptionMessage
+  ChatOptionMessage,
+  ChatPaneHeader
 } from './messages.style';
 
 const MessageFolder = () => {
@@ -107,8 +109,13 @@ const MessageFolder = () => {
         </ChatList>
       </ChatSelector>
       <ChatPane>
+        <ChatPaneHeader>
+          <FontAwesomeIcon icon="users" />
+          <span>Meh Chat</span>
+          <div />
+        </ChatPaneHeader>
+        <Chat />
       </ChatPane>
-
     </Fragment>
   );
 };

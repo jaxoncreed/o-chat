@@ -10,8 +10,7 @@ const Messages = ({ routes, ...rest }) => {
   const folders = [
     {
       displayName: 'All Chats',
-      icon: 'globe',
-      selected: true
+      icon: 'globe'
     },
     {
       displayName: 'FB Messenger',
@@ -19,7 +18,8 @@ const Messages = ({ routes, ...rest }) => {
     },
     {
       displayName: 'Inrupt Slack',
-      icon: 'fa-slack'
+      icon: 'fa-slack',
+      selected: true
     },
     {
       displayName: 'Solid Gitter',
