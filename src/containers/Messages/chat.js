@@ -121,8 +121,8 @@ const Chat = () => {
   return (
     <Fragment>
       <ChatMessages>
-        {messages.map(message => (
-          <IndividualMessage me={message.me}>
+        {messages.map((message, id) => (
+          <IndividualMessage me={message.me} key={id}>
             <IndividualMessageImage src={message.photo} />
             <IndividualMessageText me={message.me}>
               {message.text}

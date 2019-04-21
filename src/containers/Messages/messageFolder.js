@@ -97,8 +97,8 @@ const MessageFolder = () => {
             <SearchTextbox type="text" placeholder="Search chats" />
             <FontAwesomeIcon icon="search" />
           </SearchbarContainer>
-          {chats.map(chat => (
-            <ChatOptionContainer selected={chat.selected}>
+          {chats.map((chat, id) => (
+            <ChatOptionContainer selected={chat.selected} key={id}>
               <ChatOptionProfileImage src={chat.profile} />
               <ChatOptionTextContainer>
                 <ChatOptionName>{chat.chatName}</ChatOptionName>
