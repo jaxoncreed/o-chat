@@ -25,14 +25,16 @@ export const FolderSelection = styled.nav`
   overflow: auto;
   direction: rtl;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 `
 
 export const FolderTab = styled.div`
   background-color: ${props => props.selected ? lightPurple : 'transparent'};
   color: ${props => props.selected ? darkPurple : lightPurple }
   flex-shrink: 0;
-  border-bottom: ${lightPurple} solid 1px
-  padding: 5px;
+  border-top: ${lightPurple} solid 1px
+  padding: 12px;
   padding-right: 10px;
   padding-left: ${props => props.selected ? '5px' : 0}
   width: ${props => props.selected ? '33px' : '28px'}
@@ -43,8 +45,9 @@ export const FolderTab = styled.div`
   justify-content: center;
   align-items: center;
   direction: ltr;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: ${props => props.selected ? '5px' : '0'};
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: ${props => props.selected ? '5px' : '0'};
+  cursor: pointer;
 `
 
 export const FolderSelectionLabel = styled.span`

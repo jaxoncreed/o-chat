@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { withTranslation } from "react-i18next";
-import { GradientBackground, CenterContainer } from "@util-components";
 import {
   RegisterWrapper,
   RegisterPanel,
@@ -83,8 +82,8 @@ class RegisterComponent extends Component<Props, State> {
     const { providers, t } = this.props;
 
     return (
-      <GradientBackground>
-        <CenterContainer>
+      <div>
+        <div>
           <RegisterWrapper data-testid="register-wrapper">
             <h1 data-testid="title">{t("register.title")}</h1>
             <form onSubmit={this.onSubmit}>
@@ -132,8 +131,8 @@ class RegisterComponent extends Component<Props, State> {
               </RegisterPanel>
             </form>
           </RegisterWrapper>
-        </CenterContainer>
-      </GradientBackground>
+        </div>
+      </div>
     );
   }
 }

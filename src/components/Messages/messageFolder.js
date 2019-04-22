@@ -17,6 +17,7 @@ import {
   ChatOptionMessage,
   ChatPaneHeader
 } from './messages.style';
+import ProfileImage from '../Share/ProfileImage';
 
 const MessageFolder = () => {
 
@@ -112,7 +113,7 @@ const MessageFolder = () => {
         <ChatPaneHeader>
           <FontAwesomeIcon icon="users" />
           <span>Meh Chat</span>
-          <div />
+          <ProfileImage />
         </ChatPaneHeader>
         <Chat />
       </ChatPane>

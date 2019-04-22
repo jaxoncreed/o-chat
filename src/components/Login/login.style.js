@@ -1,13 +1,12 @@
 import styled from "styled-components";
-import { GradientBackground, Panel } from "@util-components";
 
-export const LoginWrapper = styled(GradientBackground)`
+export const LoginWrapper = styled.div`
   h1 {
     color: #ffffff;
   }
 `;
 
-export const LoginPanel = styled(Panel)``;
+export const LoginPanel = styled.div``;
 
 export const PanelBody = styled.div`
   display: grid;

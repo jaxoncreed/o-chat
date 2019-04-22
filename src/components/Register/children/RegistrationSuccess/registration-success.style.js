@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import { GradientBackground } from "@util-components";
 
-export const RegistrationPage = styled(GradientBackground)`
+export const RegistrationPage = styled.div`
   text-align: center;
 
   span {

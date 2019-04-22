@@ -6,11 +6,7 @@ import { ErrorBoundary, GlobalError } from "./components";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
-  <ErrorBoundary
-    component={(error, info) => <GlobalError error={error} info={info} />}
-  >
-    <App />
-  </ErrorBoundary>,
+  <App />,
   document.getElementById("root")
 );
 

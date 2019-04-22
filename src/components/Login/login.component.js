@@ -9,13 +9,12 @@ import {
   PanelBody,
   LoginTitle
 } from './login.style.js';
-import { CenterContainer } from '@util-components';
 
 const LoginComponent = props => {
   const { t } = props;
   return (
     <LoginWrapper data-testid="login-wrapper">
-      <CenterContainer>
+      <div>
         <h1 data-testid="title">{t("login.title")}</h1>
         <LoginPanel className={"login-panel"}>
           <PanelBody className={"panel-body"}>
@@ -51,7 +50,7 @@ const LoginComponent = props => {
             />
           </PanelBody>
         </LoginPanel>
-      </CenterContainer>
+      </div>
     </LoginWrapper>
   );
 };

@@ -104,3 +104,16 @@ form-group .select-role {
   margin: 10px 0;
 }
 
+.dropdown {
+  display: inline-block;
+}
+
+.dropdown__content {
+  display: none;
+  position: absolute;
+}
+
+.dropdown--active .dropdown__content {
+  display: block;
+}
+

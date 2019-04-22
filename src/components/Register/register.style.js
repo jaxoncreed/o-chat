@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Panel } from "@util-components";
 
 export const RegisterWrapper = styled.section`
   h1 {
@@ -7,7 +6,7 @@ export const RegisterWrapper = styled.section`
   }
 `;
 
-export const RegisterPanel = styled(Panel)`
+export const RegisterPanel = styled.div`
   justify-content: space-between;
 `;
 
