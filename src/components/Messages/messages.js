@@ -9,7 +9,7 @@ import { PathFactory } from 'ldflex';
 import ComunicaEngine from 'ldflex-comunica';
 import { namedNode } from '@rdfjs/data-model';
 import context from '../../contexts/context.json';
-import data from '@solid/query-ldflex';
+import ldflex from '@solid/query-ldflex';
 
 class Messages extends Component {
   constructor(props) {
@@ -33,45 +33,49 @@ class Messages extends Component {
   }
 
   async fetchChatsRecurse(folder, chats) {
-    // console.log(folder)
-    const container = data[folder];
-    for await (const contained of container.contains) {
-      console.log('============')
-      console.log('Contained Value', contained.value)
-      const type = await contained.type;
-      console.log('contained type', type.value)
-      if (
-        (type.value === 'http://www.w3.org/ns/iana/media-types/text/turtle#Resource' ||
-        type.value === 'http://www.w3.org/ns/ldp#Resource') &&
-        contained.value.includes('.ttl')
-      ) {
-        console.log('RESOURCE', contained.value)
-        try {
-          const resource = data[`${contained.value}#this`];
-          for await (const resourceType of resource.type) {
-            console.log(resourceType.value)
-            if (resourceType.value === 'http://www.w3.org/ns/pim/meeting#LongChat') {
-              const chat = {
-                url: resource.value,
-                name: await resource[`http://purl.org/dc/elements/1.1/title`],
-                participants: []
-              };
-              for await (const participant of resource['http://www.w3.org/2005/01/wf/flow#participation']) {
-                chat.participants.push(await participant['http://www.w3.org/2005/01/wf/flow#participant'])
-              }
-              chats.push(chat);
-            }
-          }
-        } catch(err) {
-          console.log(err)
-        }
-      } else if (
-        type.value === 'http://www.w3.org/ns/ldp#BasicContainer' ||
-        type.value === 'http://www.w3.org/ns/ldp#Container'
-      ) {
-        await this.fetchChatsRecurse(contained.value, chats)
-      }
-    }
+    const customizeFunc = ldflex.customize;
+    const data = ldflex.customize({ context })
+
+    // console.log(data)
+    // const container = data[folder];
+    // console.log(container);
+    // for await (const contained of container.contains) {
+    //   console.log('============')
+    //   console.log('Contained Value', contained.value)
+    //   const type = await contained.type;
+    //   console.log('contained type', type.value)
+    //   if (
+    //     (type.value === 'http://www.w3.org/ns/iana/media-types/text/turtle#Resource' ||
+    //     type.value === 'http://www.w3.org/ns/ldp#Resource') &&
+    //     contained.value.includes('.ttl')
+    //   ) {
+    //     console.log('RESOURCE', contained.value)
+    //     try {
+    //       const resource = data[`${contained.value}#this`];
+    //       for await (const resourceType of resource.type) {
+    //         console.log(resourceType.value)
+    //         if (resourceType.value === 'http://www.w3.org/ns/pim/meeting#LongChat') {
+    //           const chat = {
+    //             url: resource.value,
+    //             name: await resource[`http://purl.org/dc/elements/1.1/title`],
+    //             participants: []
+    //           };
+    //           for await (const participant of resource['http://www.w3.org/2005/01/wf/flow#participation']) {
+    //             chat.participants.push(await participant['http://www.w3.org/2005/01/wf/flow#participant'])
+    //           }
+    //           chats.push(chat);
+    //         }
+    //       }
+    //     } catch(err) {
+    //       console.log(err)
+    //     }
+    //   } else if (
+    //     type.value === 'http://www.w3.org/ns/ldp#BasicContainer' ||
+    //     type.value === 'http://www.w3.org/ns/ldp#Container'
+    //   ) {
+    //     await this.fetchChatsRecurse(contained.value, chats)
+    //   }
+    // }
   }
 
   async fetchChats() {
