@@ -103,13 +103,21 @@ class ChatService {
   }
 
   async sendMessage(msg) {
-    // if (this.currentChat != null) {
-    //   const m = new ChatMessage(this.me.username, msg, this.me.webId, this.me, this.currentChat);
-    //   m.uri = await this.rdf.appendMessage(await this.getCurrentChatUri(this.currentChat.chatFileUri), m);
-    //   this.addMessage(m);
-    // } else {
-    //   console.log('No chat selected to send messages');
-    // }
+    if (this.currentChat != null) {
+      const m = {
+        userName: this.me.username,
+        message: msg,
+        webId: this.me.webId,
+        maker: this.me,
+        chat: this.currentChat,
+        timeSent: new Date()
+      };
+      m.uri = await this.rdf.appendMessage(await this.getCurrentChatUri(this.currentChat.chatFileUri), m);
+      this.addMessage(m);
+    } else {
+      console.log('No chat selected to send messages');
+    }
+    this.triggerSubscriptions('messages');
   }
 
   async deleteMessage(message) {
@@ -149,10 +157,7 @@ class ChatService {
       const c = {
         chatTitle: await this.rdf.getConversationTitle(e.chatFileUri),
         chatFileUri: e.chatFileUri,
-        others: await Promise.all(e.others.map(async other => ({
-          webId: other,
-          profilePic: await this.rdf.getPicture(other),
-        })))
+        others: await Promise.all(e.others.map(async other => await this.getUserByWebId(other)))
       };
       this.addConversation(c);
     }));
@@ -200,7 +205,7 @@ class ChatService {
           userName: this.getUsernameFromWebID(maker),
           message: await this.rdf.getMessageContent(el.value, this.currentChatFileUri),
           webId: maker,
-          maker: await this.getUserByWebId(maker)
+          maker: await this.getUserByWebId(maker),
         };
         m.uri = el.value;
         m.timeSent = await this.rdf.getMessageDate(el.value, this.currentChatFileUri);
@@ -283,27 +288,27 @@ class ChatService {
   }
 
   async callbackForNotificationProcessing(notification) {
-  //   console.log('Notification callback executed:');
-  //   console.log(notification);
-  //   if (notification instanceof NewMessageNotification) {
-  //     const localNoti = notification;
-  //     const maker = await this.rdf.getMessageMaker(localNoti.messageUri, this.currentChatFileUri);
-  //     const m = new ChatMessage(this.getUsernameFromWebID(maker),
-  //       await this.rdf.getMessageContent(localNoti.messageUri, this.currentChatFileUri),
-  //       maker, this.getUserByWebId(maker));
-  //     m.uri = localNoti.messageUri;
-  //     m.timeSent = await this.rdf.getMessageDate(localNoti.messageUri, this.currentChatFileUri);
-  //     this.addMessage(m);
-  //   }
-  //   if (notification instanceof DeletedMessageNotification) {
-  //     const localNoti = notification;
-  //     this.deleteMessageFromUri(localNoti.messageUri);
-  //   }
-  //   if (notification instanceof ChatNotification) {
-  //     const localNoti = notification;
-  //     this.rdf.addChatToCard(this.me.webId, localNoti.participants, localNoti.chatUri);
-  //     this.addConversation(new Chat(localNoti.chatName, localNoti.chatUri, localNoti.participants));
-  //   }
+    console.log('Notification callback executed:');
+    console.log(notification);
+    // if (notification instanceof NewMessageNotification) {
+    //   const localNoti = notification;
+    //   const maker = await this.rdf.getMessageMaker(localNoti.messageUri, this.currentChatFileUri);
+    //   const m = new ChatMessage(this.getUsernameFromWebID(maker),
+    //     await this.rdf.getMessageContent(localNoti.messageUri, this.currentChatFileUri),
+    //     maker, this.getUserByWebId(maker));
+    //   m.uri = localNoti.messageUri;
+    //   m.timeSent = await this.rdf.getMessageDate(localNoti.messageUri, this.currentChatFileUri);
+    //   this.addMessage(m);
+    // }
+    // if (notification instanceof DeletedMessageNotification) {
+    //   const localNoti = notification;
+    //   this.deleteMessageFromUri(localNoti.messageUri);
+    // }
+    // if (notification instanceof ChatNotification) {
+    //   const localNoti = notification;
+    //   this.rdf.addChatToCard(this.me.webId, localNoti.participants, localNoti.chatUri);
+    //   this.addConversation(new Chat(localNoti.chatName, localNoti.chatUri, localNoti.participants));
+    // }
   }
 
   async newConversation(otherWebIds, chatName) {

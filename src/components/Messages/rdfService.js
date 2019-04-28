@@ -376,6 +376,7 @@ class RdfService {
   * @return {Promise<NamedNode>} A promise containing the NamedNode object
   */
   async getSingle(term, uri = this.session.webId) {
+    console.log(uri)
     const d = this.store.sym(uri);
     await this.fetcher.load(d.doc());
     return this.store.any(d, term);
@@ -544,7 +545,7 @@ class RdfService {
 
     const chatFolder = chatFileUri.split('/').slice(0, 5).join('/') + '/';
 
-    this.sendNotifsNewMessage(message.chat.others, chatFolder, msgUri); // comment to avoid spam
+    await this.sendNotifsNewMessage(message.chat.others.map(other => other.webId), chatFolder, msgUri); // comment to avoid spam
     return msgUri;
   }
 
@@ -955,42 +956,56 @@ class RdfService {
    * @return {Notification} The Notification extracted from the URI
    */
   async processNotification(notificationUri) {
-    // console.log(`    Processing: ${notificationUri}`);
-    // let notification;
+    console.log(`    Processing: ${notificationUri}`);
+    let notification;
 
-    // await this.store.fetcher.webOperation('GET', notificationUri).then(async res => {
-    //   if (res.status === 404) {
-    //   } else {
-    //     const body = res.responseText;
-    //     const doc = $rdf.sym(notificationUri);
-    //     try {
-    //       await $rdf.parse(body, this.store, doc.uri, 'text/turtle');
-    //       let content = await this.store.match(null, NONE('NewMessage'), null, doc.doc());
-    //       if (content.length > 0) {
-    //         notification = new NewMessageNotification('NewMessage', content[0].subject.value, content[0].object.value);
-    //       } else {
-    //         content = await this.store.match(null, RDFSYN('type'), MEE('LongChat'), doc.doc());
-    //         if (content.length > 0) {
-    //           const participants = await this.store.match(null, FLOW('participant'), null, doc.doc());
-    //           const titles = await this.store.match(null, DCEL('title'), null, doc.doc());
-    //           notification = new ChatNotification('LongChat', titles[0].object.value, content[0].subject.value,
-    //             participants.map(e => e.object.value));
-    //         } else {
-    //           content = await this.store.match(null, NONE('DeletedMessage'), null, doc.doc());
-    //           if (content.length > 0) {
-    //             notification = new DeletedMessageNotification('DeletedMessage', content[0].subject.value, content[0].object.value);
-    //           } else {
-    //             notification = new Notification('error');
-    //           }
-    //         }
-    //       }
-    //     } catch (error) {
-    //       notification = new Notification('error');
-    //       console.log(`    Unable to parse: ${notificationUri}`);
-    //     }
-    //   }
-    // });
-    // return notification;
+    await this.store.fetcher.webOperation('GET', notificationUri).then(async res => {
+      if (res.status === 404) {
+      } else {
+        const body = res.responseText;
+        const doc = $rdf.sym(notificationUri);
+        try {
+          await $rdf.parse(body, this.store, doc.uri, 'text/turtle');
+          let content = await this.store.match(null, NONE('NewMessage'), null, doc.doc());
+          if (content.length > 0) {
+            notification = {
+              type: 'NewMessage',
+              chatUri: content[0].subject.value,
+              messageUri: content[0].object.value
+            };
+          } else {
+            content = await this.store.match(null, RDFSYN('type'), MEE('LongChat'), doc.doc());
+            if (content.length > 0) {
+              const participants = await this.store.match(null, FLOW('participant'), null, doc.doc());
+              const titles = await this.store.match(null, DCEL('title'), null, doc.doc());
+              notification = {
+                type: 'LongChat',
+                chatName: titles[0].object.value,
+                chatUri: content[0].subject.value,
+                participants: participants.map(e => e.object.value)
+              };
+            } else {
+              content = await this.store.match(null, NONE('DeletedMessage'), null, doc.doc());
+              if (content.length > 0) {
+                notification = {
+                  type: 'DeletedMessage',
+                  chatUri: content[0].subject.value,
+                  messageUri: content[0].object.value
+                };
+              } else {
+                notification = {
+                  type: 'error'
+                };
+              }
+            }
+          }
+        } catch (error) {
+          notification = new Notification('error');
+          console.log(`    Unable to parse: ${notificationUri}`);
+        }
+      }
+    });
+    return notification;
   }
 
   /**

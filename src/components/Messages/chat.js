@@ -17,14 +17,22 @@ export default class Chat extends Component {
     this.state = {
       messages: []
     }
+    this.textRef = React.createRef();
+    this.submitNewMessage = this.submitNewMessage.bind(this)
   }
 
   async componentDidMount() {
     chatService.subscribe('messages', () => {
-      console.log('eeeeee')
-      console.log(chatService.messages);
       this.setState({ messages: chatService.messages })
     });
+  }
+
+  submitNewMessage(e) {
+    if (e) {
+      e.preventDefault()
+    }
+    chatService.sendMessage(this.textRef.current.value);
+    this.textRef.current.value = '';
   }
 
   render() {
@@ -133,9 +141,6 @@ export default class Chat extends Component {
       },
     ]
 
-    console.log(this.state.messages);
-    console.log(this.state.messages.length)
-
     return (
       <Fragment>
         <ChatMessages>
@@ -148,9 +153,13 @@ export default class Chat extends Component {
             </IndividualMessage>
           ))}
         </ChatMessages>
-        <MessageInputArea>
-          <ChatTextBox type="text" placeholder="Write a message" />
-          <FontAwesomeIcon icon="paper-plane" />
+        <MessageInputArea onSubmit={this.submitNewMessage}> 
+          <ChatTextBox type="text" placeholder="Write a message" ref={this.textRef} />
+          <FontAwesomeIcon
+            icon="paper-plane"
+            onClick={this.submitNewMessage}
+            style={{ cursor: 'pointer' }}
+          />
         </MessageInputArea>
       </Fragment>
     );

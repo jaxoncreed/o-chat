@@ -173,7 +173,7 @@ export const ChatPaneHeader = styled.header`
 /**
  * Chat
  */
-export const MessageInputArea = styled.div`
+export const MessageInputArea = styled.form`
   flex-shrink: 1;
   height: 50px;
   border-top: 1px solid ${lightPurple}

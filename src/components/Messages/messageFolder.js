@@ -67,7 +67,7 @@ class MessageFolder extends Component {
                 key={chat.chatFileUri}
                 onClick={() => chatService.openChat(chat)}
               >
-                <ChatOptionProfileImage src={chat.others[0].profilePic} />
+                <ChatOptionProfileImage src={chat.others[0].photoUrl} />
                 <ChatOptionTextContainer>
                   <ChatOptionName>{chat.chatTitle}</ChatOptionName>
                   {/* <ChatOptionMessage>{chat.lastMessage}</ChatOptionMessage> */}
