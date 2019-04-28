@@ -1,14 +1,12 @@
 import React, { Fragment, Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  ChatMessages,
   MessageInputArea,
-  ChatTextBox,
-  IndividualMessage,
-  IndividualMessageImage,
-  IndividualMessageText
+  ChatTextBox
 } from './messages.style';
 import chatService from './chatService';
+import useStayScrolled from 'react-stay-scrolled';
+import ChatMessages from './chatMessages'
 
 export default class Chat extends Component {
 
@@ -141,18 +139,11 @@ export default class Chat extends Component {
       },
     ]
 
+    console.log(this.state.messages)
+
     return (
       <Fragment>
-        <ChatMessages>
-          {this.state.messages.map((message, id) => (
-            <IndividualMessage me={message.webId === chatService.me.webId} key={message.uri}>
-              <IndividualMessageImage src={message.maker.photoUrl} />
-              <IndividualMessageText me={message.webId === chatService.me.webId}>
-                {message.message}
-              </IndividualMessageText>
-            </IndividualMessage>
-          ))}
-        </ChatMessages>
+        <ChatMessages messages={this.state.messages} />
         <MessageInputArea onSubmit={this.submitNewMessage}> 
           <ChatTextBox type="text" placeholder="Write a message" ref={this.textRef} />
           <FontAwesomeIcon

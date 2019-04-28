@@ -190,7 +190,7 @@ export const ChatTextBox = styled.input`
   background-color: red;
 `
 
-export const ChatMessages = styled.ul`
+export const ChatMessagesPane = styled.ul`
   flex-grow: 1;
   overflow: auto;
   padding-left: 12px;

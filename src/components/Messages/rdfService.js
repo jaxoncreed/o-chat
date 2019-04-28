@@ -376,7 +376,6 @@ class RdfService {
   * @return {Promise<NamedNode>} A promise containing the NamedNode object
   */
   async getSingle(term, uri = this.session.webId) {
-    console.log(uri)
     const d = this.store.sym(uri);
     await this.fetcher.load(d.doc());
     return this.store.any(d, term);
