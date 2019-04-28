@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   ChatMessages,
@@ -8,134 +8,151 @@ import {
   IndividualMessageImage,
   IndividualMessageText
 } from './messages.style';
+import chatService from './chatService';
 
-const Chat = () => {
-  const messages = [
-    {
-      photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
-      text: 'What\'s up?',
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/25.jpg',
-      text: 'No much. What\'s up with you all?'
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/40.jpg',
-      text: 'Doing okay but, I have a bit of a problem. Are you guys okay with me venting for a little bit?',
-      me: true
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
-      text: 'Yeah',
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/25.jpg',
-      text: 'Absolutely. We\'re here for you'
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/40.jpg',
-      text: 'Okay, well it all started about a week ago. I was walking to work, when I saw the most beautiful puppy. And I thought that I was going to adopt him. But then I decided I\'m not really at home all that much so it wouldn\'t be a responsible thing for me to do.',
-      me: true
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/40.jpg',
-      text: 'Does it sound like I made the best decision?',
-      me: true
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
-      text: 'Yeah good call on your part',
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
-      text: 'What\'s up?',
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/25.jpg',
-      text: 'No much. What\'s up with you all?'
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/40.jpg',
-      text: 'Doing okay but, I have a bit of a problem. Are you guys okay with me venting for a little bit?',
-      me: true
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
-      text: 'Yeah',
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/25.jpg',
-      text: 'Absolutely. We\'re here for you'
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/40.jpg',
-      text: 'Okay, well it all started about a week ago. I was walking to work, when I saw the most beautiful puppy. And I thought that I was going to adopt him. But then I decided I\'m not really at home all that much so it wouldn\'t be a responsible thing for me to do.',
-      me: true
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/40.jpg',
-      text: 'Does it sound like I made the best decision?',
-      me: true
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
-      text: 'Yeah good call on your part',
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
-      text: 'What\'s up?',
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/25.jpg',
-      text: 'No much. What\'s up with you all?'
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/40.jpg',
-      text: 'Doing okay but, I have a bit of a problem. Are you guys okay with me venting for a little bit?',
-      me: true
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
-      text: 'Yeah',
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/25.jpg',
-      text: 'Absolutely. We\'re here for you'
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/40.jpg',
-      text: 'Okay, well it all started about a week ago. I was walking to work, when I saw the most beautiful puppy. And I thought that I was going to adopt him. But then I decided I\'m not really at home all that much so it wouldn\'t be a responsible thing for me to do.',
-      me: true
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/40.jpg',
-      text: 'Does it sound like I made the best decision?',
-      me: true
-    },
-    {
-      photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
-      text: 'Yeah good call on your part',
-    },
-  ]
+export default class Chat extends Component {
 
-  return (
-    <Fragment>
-      <ChatMessages>
-        {messages.map((message, id) => (
-          <IndividualMessage me={message.me} key={id}>
-            <IndividualMessageImage src={message.photo} />
-            <IndividualMessageText me={message.me}>
-              {message.text}
-            </IndividualMessageText>
-          </IndividualMessage>
-        ))}
-      </ChatMessages>
-      <MessageInputArea>
-        <ChatTextBox type="text" placeholder="Write a message" />
-        <FontAwesomeIcon icon="paper-plane" />
-      </MessageInputArea>
-    </Fragment>
-  );
+  constructor(props) {
+    super(props)
+    this.state = {
+      messages: []
+    }
+  }
+
+  async componentDidMount() {
+    chatService.subscribe('messages', () => {
+      console.log('eeeeee')
+      console.log(chatService.messages);
+      this.setState({ messages: chatService.messages })
+    });
+  }
+
+  render() {
+    const messages = [
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `Let me get this straight.`,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `You're gonna go fight a dragon and rescue a princess just so Farquaad will give you back a swamp which you only don't have because he filled it full of freaks in the first place.`,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `Is that about right?`,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `You know, maybe there's a good reason donkeys shouldn't talk.`,
+        me: true,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `I don't get it. Why don't you just pull some of that ogre stuff on him?`,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `Throttle him`,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `lay siege to his fortress`,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `grind his bones to make your bread`,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `the whole ogre trip`,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `Oh, I know what. Maybe I could have decapitated an entire village and put their heads on a pike, gotten a knife, cut open their spleen and drink their fluids.`,
+        me: true,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `Does that sound good to you?`,
+        me: true,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `Uh, no, not really, no.`,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `For your information, there's a lot more to ogres than people think.`,
+        me: true,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `Example?`,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `Example? Okay, um...`,
+        me: true,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `Ogres are like onions.`,
+        me: true,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `They stink?`,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `Yes`,
+        me: true,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `*No`,
+        me: true,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `They make you cry?`,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `No!`,
+        me: true,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `You leave them in the sun, they get all brown, start sproutin' little white hairs.`,
+      },
+      {
+        photo: 'https://randomuser.me/api/portraits/women/60.jpg', 
+        text: `No! Layers! Onions have layers. Ogres have layers! Onions have layers. You get it? We both have layers.`,
+        me: true,
+      },
+    ]
+
+    console.log(this.state.messages);
+    console.log(this.state.messages.length)
+
+    return (
+      <Fragment>
+        <ChatMessages>
+          {this.state.messages.map((message, id) => (
+            <IndividualMessage me={message.webId === chatService.me.webId} key={message.uri}>
+              <IndividualMessageImage src={message.maker.photoUrl} />
+              <IndividualMessageText me={message.webId === chatService.me.webId}>
+                {message.message}
+              </IndividualMessageText>
+            </IndividualMessage>
+          ))}
+        </ChatMessages>
+        <MessageInputArea>
+          <ChatTextBox type="text" placeholder="Write a message" />
+          <FontAwesomeIcon icon="paper-plane" />
+        </MessageInputArea>
+      </Fragment>
+    );
+  }
 };
-
-export default Chat;

@@ -1,5 +1,7 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { LiveUpdate, withWebId, UpdateContext, withAuthorization } from '@inrupt/solid-react-components';
+import chatService from './chatService';
 
 import Chat from './chat'
 import {
@@ -19,106 +21,72 @@ import {
 } from './messages.style';
 import ProfileImage from '../Share/ProfileImage';
 
-const MessageFolder = () => {
+class MessageFolder extends Component {
 
-  const chats = [
-    {
-      chatName: 'Cool Chat',
-      lastMessage: 'Well I thought that was pretty cool, if you know what I mean',
-      profile: 'https://randomuser.me/api/portraits/women/60.jpg'
-    },
-    {
-      chatName: 'Meh Chat',
-      lastMessage: 'I am writing a message oh my',
-      profile: 'https://randomuser.me/api/portraits/women/25.jpg',
-      selected: true
-    },
-    {
-      chatName: 'Nah Chat',
-      lastMessage: 'What a cool message it is',
-      profile: 'https://randomuser.me/api/portraits/women/40.jpg'
-    },
-    {
-      chatName: 'Cool Chat',
-      lastMessage: 'Well I thought that was pretty cool, if you know what I mean',
-      profile: 'https://randomuser.me/api/portraits/women/60.jpg'
-    },
-    {
-      chatName: 'Meh Chat',
-      lastMessage: 'I am writing a message oh my',
-      profile: 'https://randomuser.me/api/portraits/women/25.jpg'
-    },
-    {
-      chatName: 'Nah Chat',
-      lastMessage: 'What a cool message it is',
-      profile: 'https://randomuser.me/api/portraits/women/40.jpg'
-    },
-    {
-      chatName: 'Cool Chat',
-      lastMessage: 'Well I thought that was pretty cool, if you know what I mean',
-      profile: 'https://randomuser.me/api/portraits/women/60.jpg'
-    },
-    {
-      chatName: 'Meh Chat',
-      lastMessage: 'I am writing a message oh my',
-      profile: 'https://randomuser.me/api/portraits/women/25.jpg'
-    },
-    {
-      chatName: 'Nah Chat',
-      lastMessage: 'What a cool message it is',
-      profile: 'https://randomuser.me/api/portraits/women/40.jpg'
-    },
-    {
-      chatName: 'Cool Chat',
-      lastMessage: 'Well I thought that was pretty cool, if you know what I mean',
-      profile: 'https://randomuser.me/api/portraits/women/60.jpg'
-    },
-    {
-      chatName: 'Meh Chat',
-      lastMessage: 'I am writing a message oh my',
-      profile: 'https://randomuser.me/api/portraits/women/25.jpg'
-    },
-    {
-      chatName: 'Nah Chat',
-      lastMessage: 'What a cool message it is',
-      profile: 'https://randomuser.me/api/portraits/women/40.jpg'
-    },
-  ]
+  constructor(props) {
+    super(props)
+    this.state = {
+      chats: []
+    }
+  }
 
+  async componentDidMount() {
+    chatService.subscribe('conversations', () => {
+      this.setState({ chats: chatService.conversations })
+    });
+  }
 
-  return (
-    <Fragment>
-      <ChatSelector>
-        <ChatHeader>
-          <Logo src="/img/OchatOrig.png" />
-          <FontAwesomeIcon icon="plus" />
-        </ChatHeader>
-        <ChatList>
-          <SearchbarContainer>
-            <SearchTextbox type="text" placeholder="Search chats" />
-            <FontAwesomeIcon icon="search" />
-          </SearchbarContainer>
-          {chats.map((chat, id) => (
-            <ChatOptionContainer selected={chat.selected} key={id}>
-              <ChatOptionProfileImage src={chat.profile} />
-              <ChatOptionTextContainer>
-                <ChatOptionName>{chat.chatName}</ChatOptionName>
-                <ChatOptionMessage>{chat.lastMessage}</ChatOptionMessage>
-              </ChatOptionTextContainer>
-            </ChatOptionContainer>
-          ))}
-        </ChatList>
-      </ChatSelector>
-      <ChatPane>
-        <ChatPaneHeader>
-          <FontAwesomeIcon icon="users" />
-          <span>Meh Chat</span>
-          <ProfileImage />
-        </ChatPaneHeader>
-        <Chat />
-      </ChatPane>
-    </Fragment>
-  );
+  // async componentDidUpdate(prevProps, prevState) {
+  //   if (this.props.webId && this.props.webId !== prevProps.webId) {
+  //     await this.fetchChats();
+  //   }
+  // }
+
+  // async fetchChats() {
+  //   const chats = await chatService.getConversations(this.props.webId);
+  //   console.log(chats);
+  // }
+
+  render() {
+
+    return (
+      <Fragment>
+        <ChatSelector>
+          <ChatHeader>
+            <Logo src="/img/OchatOrig.png" />
+            <FontAwesomeIcon icon="plus" />
+          </ChatHeader>
+          <ChatList>
+            <SearchbarContainer>
+              <SearchTextbox type="text" placeholder="Search chats" />
+              <FontAwesomeIcon icon="search" />
+            </SearchbarContainer>
+            {this.state.chats.map((chat) => (
+              <ChatOptionContainer
+                selected={chat.isCurrent}
+                key={chat.chatFileUri}
+                onClick={() => chatService.openChat(chat)}
+              >
+                <ChatOptionProfileImage src={chat.others[0].profilePic} />
+                <ChatOptionTextContainer>
+                  <ChatOptionName>{chat.chatTitle}</ChatOptionName>
+                  {/* <ChatOptionMessage>{chat.lastMessage}</ChatOptionMessage> */}
+                </ChatOptionTextContainer>
+              </ChatOptionContainer>
+            ))}
+          </ChatList>
+        </ChatSelector>
+        <ChatPane>
+          <ChatPaneHeader>
+            <FontAwesomeIcon icon="users" />
+            <span>Meh Chat</span>
+            <ProfileImage />
+          </ChatPaneHeader>
+          <Chat />
+        </ChatPane>
+      </Fragment>
+    );
+  }
 };
 
-export default MessageFolder;
+export default withAuthorization(withWebId(MessageFolder));

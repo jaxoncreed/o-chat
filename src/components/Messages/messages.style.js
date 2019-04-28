@@ -97,6 +97,7 @@ export const SearchbarContainer = styled.div`
   display: flex;
   align-items: center;
   padding-left: 7px;
+  margin-bottom: 10px;
 `
 
 export const SearchTextbox = styled.input`
@@ -109,7 +110,6 @@ export const SearchTextbox = styled.input`
   left: 0;
   top: 0;
   padding-left: 20px !important;
-  margin-bottom: 10px;
 `
 
 export const ChatOptionContainer = styled.div`
@@ -120,12 +120,16 @@ export const ChatOptionContainer = styled.div`
   padding: 12px;
   display: flex;
   align-items: center;
-  
+  cursor: pointer;
 `
 
-export const ChatOptionProfileImage = styled.img`
+export const ChatOptionProfileImage = styled.div`
   height: 50px;
+  width: 50px;
   border-radius: 50%;
+  background-image: url(${props => props.src});
+  background-size: cover;
+  background-color: ${darkPurple}
 `
 
 export const ChatOptionTextContainer = styled.div`
