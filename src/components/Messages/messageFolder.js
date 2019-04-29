@@ -4,6 +4,7 @@ import { LiveUpdate, withWebId, UpdateContext, withAuthorization } from '@inrupt
 import chatService from './chatService';
 
 import Chat from './chat'
+import NewChat from './newChat'
 import {
   ChatSelector,
   ChatPane,
@@ -17,7 +18,8 @@ import {
   ChatOptionTextContainer,
   ChatOptionName,
   ChatOptionMessage,
-  ChatPaneHeader
+  ChatPaneHeader,
+  CenterMessage
 } from './messages.style';
 import ProfileImage from '../Share/ProfileImage';
 
@@ -26,13 +28,18 @@ class MessageFolder extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      chats: []
+      chats: [],
+      newChatWindow: false,
+      curChat: null
     }
   }
 
   async componentDidMount() {
     chatService.subscribe('conversations', () => {
-      this.setState({ chats: chatService.conversations })
+      this.setState({ 
+        chats: chatService.conversations,
+        curChat: chatService.currentChat
+      })
     });
   }
 
@@ -49,12 +56,33 @@ class MessageFolder extends Component {
 
   render() {
 
+    let headerMessage = '';
+    let RenderedComponent = (
+      <CenterMessage>
+        Create or select a chat to view.
+      </CenterMessage>
+    )
+    if (this.state.newChatWindow) {
+      headerMessage = 'Create a new chat';
+      RenderedComponent = <NewChat callback={() => this.setState({ newChatWindow: false })} />
+    } else if (this.state.curChat) {
+      headerMessage = this.state.curChat.chatTitle;
+      RenderedComponent = <Chat />
+    }
+
+    console.log('CHATS!!!!!!!!!!!');
+    console.log(this.state.chats);
+
     return (
       <Fragment>
         <ChatSelector>
           <ChatHeader>
             <Logo src="/img/OchatOrig.png" />
-            <FontAwesomeIcon icon="plus" />
+            <FontAwesomeIcon
+              icon="plus"
+              style={{ cursor: 'pointer' }}
+              onClick={() => this.setState({ newChatWindow: true })}
+            />
           </ChatHeader>
           <ChatList>
             <SearchbarContainer>
@@ -63,9 +91,12 @@ class MessageFolder extends Component {
             </SearchbarContainer>
             {this.state.chats.map((chat) => (
               <ChatOptionContainer
-                selected={chat.isCurrent}
+                selected={chat.isCurrent && !this.state.newChatWindow}
                 key={chat.chatFileUri}
-                onClick={() => chatService.openChat(chat)}
+                onClick={() => {
+                  this.setState({ newChatWindow: false })
+                  chatService.openChat(chat)
+                }}
               >
                 <ChatOptionProfileImage src={chat.others[0].photoUrl} />
                 <ChatOptionTextContainer>
@@ -78,11 +109,11 @@ class MessageFolder extends Component {
         </ChatSelector>
         <ChatPane>
           <ChatPaneHeader>
-            <FontAwesomeIcon icon="users" />
-            <span>Meh Chat</span>
+            {/* <FontAwesomeIcon icon="users" /> */}
+            <span>{headerMessage}</span>
             <ProfileImage />
           </ChatPaneHeader>
-          <Chat />
+          {RenderedComponent}
         </ChatPane>
       </Fragment>
     );

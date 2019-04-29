@@ -33,14 +33,14 @@ class ChatService {
 
   subscribe(subName, func) {
     if (this.subscriptions[subName]) {
-      this.subscriptions[subName] = func;
+      this.subscriptions[subName].push(func);
     } else {
       this.subscriptions[subName] = [ func ]
     }
   }
 
   triggerSubscriptions(subName) {
-    if (this.subscriptions[subName]) {
+    if (this.subscriptions[subName] && Array.isArray(this.subscriptions[subName])) {
       this.subscriptions[subName].forEach(func => func());
     }
   }
@@ -56,7 +56,7 @@ class ChatService {
       username: await this.getUsernameFromWebID(this.rdf.session.webId),
       name: name ? name.value : 'NoName',
       webId: this.rdf.session.webId,
-      photoUrl: picUrl ? picUrl.value : 'https://material.angular.io/assets/img/examples/shiba1.jpg'
+      photoUrl: picUrl ? picUrl.value : 'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
     };
   }
 
@@ -142,7 +142,7 @@ class ChatService {
         username: this.getUsernameFromWebID(webId),
         fullName: name ? name.value : 'NoName',
         webId,
-        photoUrl: picUrl ? picUrl.value : 'https://material.angular.io/assets/img/examples/shiba1.jpg'
+        photoUrl: picUrl ? picUrl.value : 'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
       });
     }));
   }
@@ -187,6 +187,7 @@ class ChatService {
       this.currentChatFileUri = this.getCurrentChatUri(this.currentChat.chatFileUri);
       await this.rdf.createStructure(this.currentChatFileUri);
     } catch (error) {
+      console.error(error)
       console.log('Chat not initialised');
 
     }
@@ -225,12 +226,14 @@ class ChatService {
       }
     }
     return {
-      photoUrl: 'https://material.angular.io/assets/img/examples/shiba1.jpg'
+      photoUrl: 'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
     };
   }
 
   addMessage(msg) {
-    this.messages.push(msg);
+    if (!this.messages.find(message => message.uri && (message.uri === msg.uri))) {
+      this.messages.push(msg);
+    }
   }
 
   getCurrentChatUri(channelUri) {
@@ -252,7 +255,11 @@ class ChatService {
   }
 
   urlLogFilter(url) {
-    return url.replace('https://josecuriosoalternativo.inrupt.net', '').replace('https://josecurioso.solid.community', '');
+    try {
+      return url.replace('https://josecuriosoalternativo.inrupt.net', '').replace('https://josecurioso.solid.community', '');
+    } catch(err) {
+      return '';
+    }
   }
 
   async checkInbox() {
@@ -289,31 +296,44 @@ class ChatService {
 
   async callbackForNotificationProcessing(notification) {
     console.log('Notification callback executed:');
-    console.log(notification);
-    // if (notification instanceof NewMessageNotification) {
-    //   const localNoti = notification;
-    //   const maker = await this.rdf.getMessageMaker(localNoti.messageUri, this.currentChatFileUri);
-    //   const m = new ChatMessage(this.getUsernameFromWebID(maker),
-    //     await this.rdf.getMessageContent(localNoti.messageUri, this.currentChatFileUri),
-    //     maker, this.getUserByWebId(maker));
-    //   m.uri = localNoti.messageUri;
-    //   m.timeSent = await this.rdf.getMessageDate(localNoti.messageUri, this.currentChatFileUri);
-    //   this.addMessage(m);
-    // }
-    // if (notification instanceof DeletedMessageNotification) {
-    //   const localNoti = notification;
-    //   this.deleteMessageFromUri(localNoti.messageUri);
-    // }
-    // if (notification instanceof ChatNotification) {
-    //   const localNoti = notification;
-    //   this.rdf.addChatToCard(this.me.webId, localNoti.participants, localNoti.chatUri);
-    //   this.addConversation(new Chat(localNoti.chatName, localNoti.chatUri, localNoti.participants));
-    // }
+    if (notification.type === 'NewMessage') {
+      const localNoti = notification;
+      const maker = await this.rdf.getMessageMaker(localNoti.messageUri, this.currentChatFileUri);
+      const m = {
+        userName: this.getUsernameFromWebID(maker),
+        message: await this.rdf.getMessageContent(localNoti.messageUri, this.currentChatFileUri),
+        webId: maker,
+        maker: this.getUserByWebId(maker)
+      };
+      m.uri = localNoti.messageUri;
+      m.timeSent = await this.rdf.getMessageDate(localNoti.messageUri, this.currentChatFileUri);
+      this.addMessage(m);
+      this.triggerSubscriptions('messages')
+    }
+    if (notification.type === 'DeletedMessage') {
+      const localNoti = notification;
+      this.deleteMessageFromUri(localNoti.messageUri);
+    }
+    if (notification.type === 'LongChat') {
+      const localNoti = notification;
+      this.rdf.addChatToCard(this.me.webId, localNoti.participants, localNoti.chatUri);
+      this.addConversation({
+        chatTitle: localNoti.chatName,
+        chatFileUri: localNoti.chatUri,
+        others: localNoti.participants
+      });
+      this.triggerSubscriptions('conversations')
+    }
   }
 
   async newConversation(otherWebIds, chatName) {
-    // const chatUri = await this.rdf.createNewChat(this.me.webId, otherWebIds, chatName);
-    // this.addConversation(new Chat(chatName, chatUri, otherWebIds));
+    const chatUri = await this.rdf.createNewChat(this.me.webId, otherWebIds, chatName);
+    this.addConversation({
+      chatTitle: chatName,
+      chatFileUri: chatUri,
+      others: otherWebIds
+    });
+    this.triggerSubscriptions('conversations');
   }
 
 }

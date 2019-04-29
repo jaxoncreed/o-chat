@@ -1,4 +1,4 @@
-import fileClient from 'solid-file-client';
+import * as fileClient from 'solid-file-client';
 
 // TODO: Remove any UI interaction from this service
 import * as shortHash from 'short-hash';
@@ -740,7 +740,6 @@ class RdfService {
       chatfile = true;
     }, async err => chatfile = false);
 
-
     if (!chatfile) {
       for (let i = 4; i > 0; i--) {
         uris.push(splitted.slice(0, splitted.length - i).join('/'));
@@ -759,7 +758,11 @@ class RdfService {
   * @param {string} uri uri that needs formatting
   */
   urlLogFilter(url) {
-    return url.replace('https://josecuriosoalternativo.inrupt.net', '').replace('https://josecurioso.solid.community', '');
+    try {
+      return url.replace('https://josecuriosoalternativo.inrupt.net', '').replace('https://josecurioso.solid.community', '');
+    } catch(err) {
+      return '';
+    }
   }
 
   async sendNotifsNewConv(webId, chatFolderUri, chatName, otherWebIds) {

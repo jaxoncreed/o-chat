@@ -15,6 +15,8 @@ export default function ChatMessages({ messages }) {
     stayScrolled();
   }, [messages.length])
 
+  console.log(messages)
+
   return (
     <ChatMessagesPane ref={listRef}>
       {messages.map((message, id) => (

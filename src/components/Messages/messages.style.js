@@ -228,3 +228,25 @@ export const IndividualMessageText = styled.div`
   margin-right: ${props => props.me ? '5px' : '25px' }
   max-width: 60%;
 `
+
+export const CenterMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+`
+
+/**
+ * New Chat
+ */
+export const NewChatContainer = styled.form`
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  flex-direction: column;
+`
+
+export const NewChatInput = styled.input`
+  max-width: 500px;
+  margin-bottom: 10px;
+`
