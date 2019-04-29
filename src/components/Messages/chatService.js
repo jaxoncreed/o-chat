@@ -136,15 +136,19 @@ class ChatService {
       return;
     }
     this.rdf.getFriends().then(res => res.map(e => e.value).forEach(async webId => {
-      const name = (await this.rdf.getName(webId));
-      const picUrl = (await this.rdf.getPicture(webId));
-      this.friends.push({
-        username: this.getUsernameFromWebID(webId),
-        fullName: name ? name.value : 'NoName',
-        webId,
-        photoUrl: picUrl ? picUrl.value : 'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      });
+      await this.loadPerson(webId)
     }));
+  }
+
+  async loadPerson(webId) {
+    const name = (await this.rdf.getName(webId));
+    const picUrl = (await this.rdf.getPicture(webId));
+    this.friends.push({
+      username: this.getUsernameFromWebID(webId),
+      fullName: name ? name.value : 'NoName',
+      webId,
+      photoUrl: picUrl ? picUrl.value : 'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
+    });
   }
 
   async loadConversations() {
@@ -216,7 +220,7 @@ class ChatService {
     this.triggerSubscriptions('messages');
   }
 
-  getUserByWebId(webId) {
+  async getUserByWebId(webId) {
     if (this.me.webId === webId) {
       return this.me;
     }
@@ -225,9 +229,12 @@ class ChatService {
         return this.friends[i];
       }
     }
-    return {
-      photoUrl: 'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-    };
+    await this.loadPerson(webId);
+    for (let i = 0; i < this.friends.length; i++) {
+      if (this.friends[i].webId === webId) {
+        return this.friends[i];
+      }
+    }
   }
 
   addMessage(msg) {
@@ -303,7 +310,7 @@ class ChatService {
         userName: this.getUsernameFromWebID(maker),
         message: await this.rdf.getMessageContent(localNoti.messageUri, this.currentChatFileUri),
         webId: maker,
-        maker: this.getUserByWebId(maker)
+        maker: await this.getUserByWebId(maker)
       };
       m.uri = localNoti.messageUri;
       m.timeSent = await this.rdf.getMessageDate(localNoti.messageUri, this.currentChatFileUri);
