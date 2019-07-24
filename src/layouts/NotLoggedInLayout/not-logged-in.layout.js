@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import { Route, Redirect } from "react-router-dom";
-import { withTranslation } from "react-i18next";
 import { withWebId } from "@inrupt/solid-react-components";
 
 const NotLoggedInLayout = props => {
@@ -19,4 +18,4 @@ const NotLoggedInLayout = props => {
   );
 };
 
-export default withTranslation()(withWebId(NotLoggedInLayout));
+export default withWebId(NotLoggedInLayout);

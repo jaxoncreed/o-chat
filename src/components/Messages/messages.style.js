@@ -13,7 +13,7 @@ export const MessagesWrapper = styled.section`
   display: flex;
   justify-content: stretch;
   height: 100vh;
-  overflow: hidden;
+  overflow: auto;
 `;
 
 export const FolderSelection = styled.nav`

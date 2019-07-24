@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import { Route, Link } from "react-router-dom";
-import { withTranslation } from "react-i18next";
 import { withWebId } from "@inrupt/solid-react-components";
 
 const PublicLayout = props => {
@@ -15,4 +14,4 @@ const PublicLayout = props => {
   );
 };
 
-export default withTranslation()(withWebId(PublicLayout));
+export default withWebId(PublicLayout);

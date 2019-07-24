@@ -13,7 +13,7 @@ class RegistrationSuccess extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      timeLeft: 15
+      timeLeft: 3
     };
   }
 

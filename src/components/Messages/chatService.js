@@ -327,7 +327,7 @@ class ChatService {
       this.addConversation({
         chatTitle: localNoti.chatName,
         chatFileUri: localNoti.chatUri,
-        others: localNoti.participants
+        others: await Promise.all(localNoti.participants.map(async webId => await this.getUserByWebId(webId)))
       });
       this.triggerSubscriptions('conversations')
     }
@@ -338,7 +338,7 @@ class ChatService {
     this.addConversation({
       chatTitle: chatName,
       chatFileUri: chatUri,
-      others: otherWebIds
+      others: await Promise.all(otherWebIds.map(async webId => await this.getUserByWebId(webId)))
     });
     this.triggerSubscriptions('conversations');
   }

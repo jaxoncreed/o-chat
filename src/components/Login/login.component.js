@@ -1,7 +1,6 @@
 /* eslint-disable constructor-super */
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { withTranslation } from 'react-i18next';
 import { ProviderLogin } from '@inrupt/solid-react-components';
 import {
   LoginWrapper,
@@ -11,18 +10,24 @@ import {
 } from './login.style.js';
 
 const LoginComponent = props => {
-  const { t } = props;
   return (
     <LoginWrapper data-testid="login-wrapper">
       <div>
-        <h1 data-testid="title">{t("login.title")}</h1>
         <LoginPanel className={"login-panel"}>
+          <img src="/img/OchatOrig.png" alt="oChat Logo"
+            style={{
+              width: '300px',
+              marginBottom: '20px',
+              marginTop: '20px',
+              alignSelf: 'center'
+            }}
+          />
           <PanelBody className={"panel-body"}>
             <Link
               className='ids-link-filled ids-link-filled--primary'
               to='/register'
             >
-              {t('login.register')}
+              Register for a Solid Identity
             </Link>
             <a
               href='https://solid.inrupt.com/get-a-solid-pod'
@@ -30,22 +35,22 @@ const LoginComponent = props => {
               target='_blank'
               className='link'
             >
-              {t('login.solidHelp')}
+              What is a Solid Identity?
             </a>
-            <LoginTitle data-testid="login-title"> <span>{t("login.loginTitle")}</span></LoginTitle>
+            <LoginTitle data-testid="login-title"> <span>Log In</span></LoginTitle>
             <ProviderLogin
-              selectPlaceholder={t('login.selectPlaceholder')}
-              inputPlaholder={t('login.inputPlaholder')}
-              formButtonText={t('login.formButtonText')}
-              btnTxtWebId={t('login.btnTxtWebId')}
-              btnTxtProvider={t('login.btnTxtProvider')}
+              selectPlaceholder="Select ID Provider"
+              inputPlaholder="WebID"
+              formButtonText="Log In"
+              btnTxtWebId="Log In with WebId"
+              btnTxtProvider="Log In with Provider"
               className='provider-login-component'
               callbackUri={`${window.location.origin}/`}
               errorsText={{
-                unknown: t('login.errors.unknown'),
-                webIdNotValid: t('login.errors.webIdNotValid'),
-                emptyProvider: t('login.errors.emptyProvider'),
-                emptyWebId: t('login.errors.emptyWebId')
+                unknown: 'Something is wrong, please try again...',
+                webIdNotValid: 'WeibID is not valid',
+                emptyProvider: 'Solid Provider is required',
+                emptyWebId: 'Valid WebID is required'
               }}
             />
           </PanelBody>
@@ -57,4 +62,4 @@ const LoginComponent = props => {
 
 export { LoginComponent };
 
-export default withTranslation()(LoginComponent);
+export default LoginComponent;

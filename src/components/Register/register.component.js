@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
-import { withTranslation } from "react-i18next";
 import {
   RegisterWrapper,
   RegisterPanel,
@@ -79,18 +78,17 @@ class RegisterComponent extends Component<Props, State> {
       canContinue,
       register: { provider }
     } = this.state;
-    const { providers, t } = this.props;
+    const { providers } = this.props;
 
     return (
       <div>
         <div>
           <RegisterWrapper data-testid="register-wrapper">
-            <h1 data-testid="title">{t("register.title")}</h1>
+            <h1 data-testid="title">Hi! Welcome to Solid.</h1>
             <form onSubmit={this.onSubmit}>
               <RegisterPanel className="register-panel">
                 <PanelHeader className="panel-header" data-testid="panel-header">
-                  <h2>{t("register.step1Title")}</h2>
-                  <div className="progress-bar" />
+                  <h2>Select your Provider</h2>
                 </PanelHeader>
                 <PanelBody className="panel-body">
                   <Fragment>
@@ -99,10 +97,10 @@ class RegisterComponent extends Component<Props, State> {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {t("register.whatIsAProvider")}
+                      What is a provider, and how should I choose one?
                     </a>
                     <Link to="/login" className="a-with-spacing">
-                      {t("register.alreadySolid")}
+                      I already have a Solid identity
                     </Link>
                     <ul>
                       {providers.map((providerData, i) => (
@@ -125,7 +123,7 @@ class RegisterComponent extends Component<Props, State> {
                     type="submit"
                     disabled={!canContinue}
                   >
-                    {t("register.next")}
+                    Next
                   </button>
                 </Actions>
               </RegisterPanel>
@@ -138,4 +136,4 @@ class RegisterComponent extends Component<Props, State> {
 }
 
 export { RegisterComponent };
-export default withTranslation()(RegisterComponent);
+export default RegisterComponent;

@@ -4,6 +4,9 @@ export const RegisterWrapper = styled.section`
   h1 {
     color: #ffffff;
   }
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 export const RegisterPanel = styled.div`

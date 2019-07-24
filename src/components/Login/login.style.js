@@ -4,9 +4,15 @@ export const LoginWrapper = styled.div`
   h1 {
     color: #ffffff;
   }
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
-export const LoginPanel = styled.div``;
+export const LoginPanel = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 export const PanelBody = styled.div`
   display: grid;
